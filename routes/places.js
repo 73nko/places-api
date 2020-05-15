@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const stringCapitalizeName = require("string-capitalize-name");
 
 const Place = require("../models/places");
 
@@ -50,7 +49,7 @@ router.get("/", (req, res) => {
 // CREATE
 router.post("/", (req, res) => {
   let newPlace = new Place({
-    name: sanitizeName(req.body.name),
+    name: req.body.name,
     location: req.body.location,
   });
 
@@ -73,7 +72,7 @@ router.post("/", (req, res) => {
 // UPDATE
 router.put("/:id", (req, res) => {
   let updatedPlace = {
-    name: sanitizeName(req.body.name),
+    name: req.body.name,
     location: req.body.location,
   };
 
@@ -123,8 +122,3 @@ router.delete("/:id", (req, res) => {
 });
 
 module.exports = router;
-
-// Minor sanitizing to be invoked before reaching the database
-const sanitizeName = (name) => {
-  return stringCapitalizeName(name);
-};

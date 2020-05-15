@@ -19,7 +19,6 @@
     "mongoose-unique-validator": "2.0.3",
     "mongoose-validator": "2.1.0",
     "nodemon": "^2.0.3",
-    "socket.io": "2.3.0",
-    "string-capitalize-name": "1.0.3"
+    "socket.io": "2.3.0"
   }
 }
