@@ -1,24 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const RateLimit = require("express-rate-limit");
-const mongoose = require("mongoose");
 const stringCapitalizeName = require("string-capitalize-name");
 
 const Place = require("../models/places");
-
-// Attempt to limit spam post requests for inserting data
-const minutes = 5;
-const postLimiter = new RateLimit({
-  windowMs: minutes * 60 * 1000, // milliseconds
-  max: 100, // Limit each IP to 100 requests per windowMs
-  delayMs: 0, // Disable delaying - full speed until the max limit is reached
-  handler: (req, res) => {
-    res.status(429).json({
-      success: false,
-      msg: `You made too many requests. Please try again after ${minutes} minutes.`,
-    });
-  },
-});
 
 const errorHandle = (err, res) => {
   if (err.errors) {
@@ -64,7 +48,7 @@ router.get("/", (req, res) => {
 });
 
 // CREATE
-router.post("/", postLimiter, (req, res) => {
+router.post("/", (req, res) => {
   let newPlace = new Place({
     name: sanitizeName(req.body.name),
     location: req.body.location,
@@ -106,7 +90,7 @@ router.put("/:id", (req, res) => {
             result: {
               _id: newResult._id,
               name: newResult.name,
-              location: result.location,
+              location: newResult.location,
             },
           });
         })
@@ -122,14 +106,14 @@ router.put("/:id", (req, res) => {
 // DELETE
 router.delete("/:id", (req, res) => {
   Place.findByIdAndRemove(req.params.id)
-    .then((result) => {
+    .then((newResult) => {
       res.json({
         success: true,
         msg: `It has been deleted.`,
         result: {
           _id: newResult._id,
           name: newResult.name,
-          location: result.location,
+          location: newResult.location,
         },
       });
     })
@@ -141,6 +125,6 @@ router.delete("/:id", (req, res) => {
 module.exports = router;
 
 // Minor sanitizing to be invoked before reaching the database
-sanitizeName = (name) => {
+const sanitizeName = (name) => {
   return stringCapitalizeName(name);
 };
