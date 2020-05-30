@@ -22,6 +22,29 @@ const errorHandle = (err, res) => {
   }
 };
 
+router.get("/near/", (req, res) => {
+  const { long, latt, distance = 1000 } = req.query;
+  const locationQuery = {
+    location: {
+      $near: {
+        $maxDistance: distance,
+        $geometry: {
+          type: "Point",
+          coordinates: [long, latt],
+        },
+      },
+    },
+  };
+
+  Place.find(locationQuery)
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((err) => {
+      res.status(404).json({ success: false, msg: `No such place.` });
+    });
+});
+
 // READ (ONE)
 router.get("/:id", (req, res) => {
   Place.findById(req.params.id)
@@ -29,7 +52,7 @@ router.get("/:id", (req, res) => {
       res.json(result);
     })
     .catch((err) => {
-      res.status(404).json({ success: false, msg: `No such user.` });
+      res.status(404).json({ success: false, msg: `No such place.` });
     });
 });
 

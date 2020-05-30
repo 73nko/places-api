@@ -28,6 +28,10 @@ const PlaceSchema = new mongoose.Schema({
     required: [true, "Name is required."],
     validate: nameValidator,
   },
+  tag: {
+    type: String,
+    required: [true, "Tag is required."],
+  },
   location: {
     type: pointSchema,
     required: true,

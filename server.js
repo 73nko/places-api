@@ -26,11 +26,6 @@ db.on("error", (err) => {
 // Instantiate express
 const app = express();
 
-// Don't touch this if you don't know it
-// We are using this for the express-rate-limit middleware
-// See: https://github.com/nfriedly/express-rate-limit
-app.enable("trust proxy");
-
 // Set public folder using built-in express.static middleware
 app.use(express.static("public"));
 
